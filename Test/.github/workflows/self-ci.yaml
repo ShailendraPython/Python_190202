@@ -1,0 +1,30 @@
+name: Build and Deploy Docker Image
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - '.github/workflows/**'
+      - 'requirements.txt'
+      - 'requirements-tox.txt'
+      - 'tests/integration/**'
+      - 'tests/unit/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - '.github/workflows/**'
+      - 'requirements.txt'
+      - 'requirements-tox.txt'
+
+jobs:
+  call-reusable-workflow:
+    uses: urbn/x35-actions/.github/workflows/reusable-docker-build.yml@wf-reusable-docker-build-0006
+    with:
+      prod_build: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    secrets:
+      SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+      WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
