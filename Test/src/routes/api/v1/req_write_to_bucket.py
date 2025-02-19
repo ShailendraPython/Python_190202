@@ -26,8 +26,7 @@ async def request_write_to_bucket(request: ProxyRequest):
     # If response is already a JSONResponse, extract the JSON data
     response_content = json.loads(response.body.decode())
     content = response_content.get("json", {})
-    print(settings.gcsbucket.bucket_name)
-    GCSBucketClient.write_to_bucket(bucket_name=settings.gcsbucket.bucket_name, file_name="test.json", file_content=content)
-
+    file_name =  content.get("name",'Test') + str(content.get("test_number" , "0")) + ".jsom"
+    GCSBucketClient.write_to_bucket(bucket_name=settings.gcsbucket.bucket_name, file_name=file_name, file_content=content)
     # If response is a dict, return it directly
     return Response(status_code=status.HTTP_201_CREATED)
